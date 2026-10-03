@@ -45,9 +45,11 @@ export const userdata = async (req, res) => {
     }
 
     let dbres = await db.insertOne(fields);
+    
     if (dbres) {
       return res.status(201).json({
         msg: "user registered successfully",
+
       });
     }
 
