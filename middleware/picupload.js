@@ -1,5 +1,6 @@
 import { v2 as cloudinary } from "cloudinary";
-import dbauth from "../models/registration.js";
+import jwt from "jsonwebtoken";
+import db from "../models/registration.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -72,14 +73,23 @@ export const picupload = async (req, res, next) => {
 };
 
 
-// Update profile picture
+// Update Profile Picture
 export const picupdate = async (req, res) => {
   try {
-    const { RollNo } = req.body;
+    let { token } = req.body;
 
-    if (!RollNo) {
-      return res.status(400).json({
-        msg: "RollNo is required"
+    if (!token) {
+      return res.status(401).json({
+        msg: "Token is required"
+      });
+    }
+
+    const data = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = data.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        msg: "User not authenticated"
       });
     }
 
@@ -89,13 +99,13 @@ export const picupdate = async (req, res) => {
       });
     }
 
-    const userdata = await dbauth.findOne({
-      RollNO: RollNo
+    const userdata = await db.findOne({
+      referenceid: userId
     });
 
     if (!userdata) {
       return res.status(404).json({
-        msg: "User not found"
+        msg: "User data not found"
       });
     }
 
@@ -104,13 +114,15 @@ export const picupdate = async (req, res) => {
       await cloudinary.uploader.destroy(userdata.picpublicid);
     }
 
+    // Upload new profile picture
     const picResult = await uploadToCloudinary(
       req.files.pic[0],
       `students/${userdata.Name}/pic`
     );
 
-    await dbauth.updateOne(
-      { RollNO: RollNo },
+    // Update database
+    await db.updateOne(
+      { referenceid: userId },
       {
         $set: {
           url: picResult.secure_url,
@@ -126,6 +138,15 @@ export const picupdate = async (req, res) => {
   } catch (error) {
     console.error(error);
 
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        msg: "Invalid or expired token"
+      });
+    }
+
     return res.status(500).json({
       msg: "Error updating profile picture"
     });
@@ -133,14 +154,23 @@ export const picupdate = async (req, res) => {
 };
 
 
-// Update Aadhaar picture
+// Update Aadhaar Picture
 export const Aadharpicupdate = async (req, res) => {
   try {
-    const { RollNo } = req.body;
+    let { token } = req.body;
 
-    if (!RollNo) {
-      return res.status(400).json({
-        msg: "RollNo is required"
+    if (!token) {
+      return res.status(401).json({
+        msg: "Token is required"
+      });
+    }
+
+    const data = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = data.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        msg: "User not authenticated"
       });
     }
 
@@ -150,13 +180,13 @@ export const Aadharpicupdate = async (req, res) => {
       });
     }
 
-    const userdata = await dbauth.findOne({
-      RollNO: RollNo
+    const userdata = await db.findOne({
+      referenceid: userId
     });
 
     if (!userdata) {
       return res.status(404).json({
-        msg: "User not found"
+        msg: "User data not found"
       });
     }
 
@@ -165,13 +195,15 @@ export const Aadharpicupdate = async (req, res) => {
       await cloudinary.uploader.destroy(userdata.picAadharid);
     }
 
+    // Upload new Aadhaar picture
     const aadharResult = await uploadToCloudinary(
       req.files.picAadhar[0],
       `students/${userdata.Name}/aadhar`
     );
 
-    await dbauth.updateOne(
-      { RollNO: RollNo },
+    // Update database
+    await db.updateOne(
+      { referenceid: userId },
       {
         $set: {
           urlAadhar: aadharResult.secure_url,
@@ -186,6 +218,15 @@ export const Aadharpicupdate = async (req, res) => {
 
   } catch (error) {
     console.error(error);
+
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return res.status(401).json({
+        msg: "Invalid or expired token"
+      });
+    }
 
     return res.status(500).json({
       msg: "Error updating Aadhaar picture"
