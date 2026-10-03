@@ -1,5 +1,6 @@
 import db from "../models/registration.js";
 import jwt from "jsonwebtoken";
+import dbauth from "../models/authentication.js"
 
 export const userdata = async (req, res) => {
   try {
@@ -12,7 +13,10 @@ export const userdata = async (req, res) => {
       branch,
       MobileNo,
       url,
-      urlAadhar
+      urlAadhar,
+      picpublicid,
+      picAadharid
+      
     } = req.body;
     let data=jwt.verify(jwttoken,process.env.JWT_SECRET);
 
@@ -33,7 +37,11 @@ export const userdata = async (req, res) => {
       MobileNo,
       url,
       urlAadhar,
-      Refernceid: id
+      Refernceid: id,
+       picpublicid,
+      picAadharid
+
+      
     };
 
     for (let key in fields) {
@@ -58,6 +66,47 @@ export const userdata = async (req, res) => {
 
     return res.status(500).json({
       msg: "error while registering"
+    });
+  }
+};
+export const dataupdate = async (req, res) => {
+  try {
+    const {
+      RollNO,
+      Name,
+      batch,
+      Aadhar,
+      branch,
+      MobileNo,
+      url,
+      urlAadhar
+    } = req.body;
+
+    const updatedata = await db.updateOne(
+      { RollNO },
+      {
+        $set: {
+          Name,
+          batch,
+          Aadhar,
+          branch,
+          MobileNo,
+          url,
+          urlAadhar
+        }
+      }
+    );
+
+    return res.status(200).json({
+      msg: "data updated successfully",
+      result: updatedata
+    });
+
+  } catch (err) {
+    console.error(err);
+
+    return res.status(500).json({
+      msg: "error updating data"
     });
   }
 };

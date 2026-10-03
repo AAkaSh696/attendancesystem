@@ -51,7 +51,9 @@ const schema = new mongoose.Schema({
     },
     urlAadhar:{
         type:String
-    }
+    },
+    picpublicid:{type:String},
+    picAadharid:{type:String}
 
 }, { timestamps: true });
 
