@@ -10,6 +10,11 @@ const schema = new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    type:{
+        type:String,
+        enum:["admin","user"],
+        required:true
     }
     
 

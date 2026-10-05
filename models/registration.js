@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 
 const schema = new mongoose.Schema({
-    
+
     Name: {
         type: String,
         required: true
     },
-    Refernceid:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Authentication"
+
+    Refernceid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Authentication",
+        required: true
     },
 
     batch: {
@@ -46,14 +48,40 @@ const schema = new mongoose.Schema({
         unique: true,
         match: /^\d{10}$/
     },
-    url:{
-        type:String,
+
+    url: {
+        type: String,
+        required:true
     },
-    urlAadhar:{
-        type:String
+
+    urlAadhar: {
+        type: String,
+        required:true
     },
-    picpublicid:{type:String},
-    picAadharid:{type:String}
+
+    picpublicid: {
+        type: String
+    },
+
+    picAadharid: {
+        type: String
+    },
+
+    verified: {
+        type: Boolean,
+        default: false
+    },
+
+    verifiedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Authentication",
+        default: null
+    },
+
+    verifiedAt: {
+        type: Date,
+        default: null
+    }
 
 }, { timestamps: true });
 

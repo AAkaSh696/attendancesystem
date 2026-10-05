@@ -1,7 +1,7 @@
 import {picupload,picupdate,Aadharpicupdate} from "../middleware/picupload.js"
 import express from "express"
 import multer from "multer";
-import {userdata,dataupdate} from "../controllers/userdata.js"
+import {userdata,dataupdate,getuserdata} from "../controllers/userdata.js"
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 let userRoutes=express.Router();
@@ -12,4 +12,5 @@ userRoutes.post("/",upload.fields([
 userRoutes.post("/update",dataupdate);
 userRoutes.post("/imageupdate",upload.fields([{name:"pic",maxCount:1}]),picupdate)
 userRoutes.post("/Aadharimageupdate",upload.fields([{name:"picAadhar",maxCount:1}]),Aadharpicupdate)
+userRoutes.post("/getuserdata",getuserdata)
 export default userRoutes

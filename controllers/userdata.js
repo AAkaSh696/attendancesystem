@@ -7,7 +7,7 @@ export const userdata = async (req, res) => {
   try {
     let {
       Name,
-      jwttoken,
+      token,
       batch,
       Aadhar,
       RollNO,
@@ -19,14 +19,14 @@ export const userdata = async (req, res) => {
       picAadharid
     } = req.body;
 
-    if (!jwttoken) {
+    if (!token) {
       return res.status(401).json({
         msg: "Token is required"
       });
     }
 
     const data = jwt.verify(
-      jwttoken,
+       token,
       process.env.JWT_SECRET
     );
 
@@ -47,7 +47,7 @@ export const userdata = async (req, res) => {
       MobileNo,
       url,
       urlAadhar,
-      referenceid: id,
+      Refernceid: id,
       picpublicid,
       picAadharid
     };
@@ -64,7 +64,8 @@ export const userdata = async (req, res) => {
 
     if (dbres) {
       return res.status(201).json({
-        msg: "user registered successfully"
+        msg: "user registered successfully",
+        data:dbres
       });
     }
 
@@ -160,4 +161,36 @@ export const dataupdate = async (req, res) => {
       msg: "error updating data"
     });
   }
+};
+export const getuserdata = async (req, res) => {
+    try {
+        const token = req.body.token;
+
+        const data = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+        const userdata = await db.findOne({
+            Refernceid: data.userId
+        });
+
+        if (!userdata) {
+            return res.status(404).json({
+                msg: "User data not found"
+            });
+        }
+
+        return res.status(200).json({
+            msg: "Data fetched successfully",
+            data: userdata
+        });
+
+    } catch (err) {
+        console.error(err);
+
+        return res.status(500).json({
+            msg: "Error while fetching user data"
+        });
+    }
 };

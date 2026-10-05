@@ -2,7 +2,7 @@ import { createClient } from "redis";
 
 const func = async () => {
     const client = createClient({
-        url: "redis://localhost:6379"
+        url:process.env.REDIS_URL
     });
 
     client.on("error", (err) => {

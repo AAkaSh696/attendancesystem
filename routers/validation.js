@@ -7,5 +7,4 @@ auth.post("/login",verifyusersigin);
 auth.post("/mailauth",mailauth);
 auth.post("/tokenauth",tokenauth);
 auth.post("/signup",verifyusersignup);
-
 export default auth
