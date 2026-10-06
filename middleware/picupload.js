@@ -154,10 +154,14 @@ export const picupdate = async (req, res) => {
                 Refernceid: userId
             },
             {
-                $set: {
-                    url: picResult.secure_url,
-                    picpublicid: picResult.public_id
-                }
+               $set: {
+    url: picResult.secure_url,
+    picpublicid: picResult.public_id,
+
+    verified: false,
+    verifiedBy: null,
+    verifiedAt: null
+}
             }
         );
 
@@ -240,10 +244,14 @@ export const Aadharpicupdate = async (req, res) => {
                 Refernceid: userId
             },
             {
-                $set: {
-                    urlAadhar: aadharResult.secure_url,
-                    picAadharid: aadharResult.public_id
-                }
+               $set: {
+    urlAadhar: aadharResult.secure_url,
+    picAadharid: aadharResult.public_id,
+
+    verified: false,
+    verifiedBy: null,
+    verifiedAt: null
+}
             }
         );
 

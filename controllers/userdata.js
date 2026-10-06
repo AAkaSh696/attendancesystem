@@ -89,6 +89,7 @@ export const userdata = async (req, res) => {
 
 
 // Update User Data
+// Update User Data
 export const dataupdate = async (req, res) => {
   try {
     const {
@@ -120,7 +121,7 @@ export const dataupdate = async (req, res) => {
 
     const updatedata = await db.updateOne(
       {
-        referenceid: data.userId
+        Refernceid: data.userId
       },
       {
         $set: {
@@ -129,7 +130,13 @@ export const dataupdate = async (req, res) => {
           Aadhar,
           RollNO,
           branch,
-          MobileNo
+          MobileNo,
+
+          // Any profile update requires
+          // verification again
+          verified: false,
+          verifiedBy: null,
+          verifiedAt: null
         }
       }
     );
@@ -141,12 +148,12 @@ export const dataupdate = async (req, res) => {
     }
 
     return res.status(200).json({
-      msg: "data updated successfully",
+      msg: "Data updated successfully. Verification is required again.",
       result: updatedata
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("UPDATE USER DATA ERROR:", err);
 
     if (
       err.name === "JsonWebTokenError" ||
@@ -158,7 +165,7 @@ export const dataupdate = async (req, res) => {
     }
 
     return res.status(500).json({
-      msg: "error updating data"
+      msg: "Error updating data"
     });
   }
 };
