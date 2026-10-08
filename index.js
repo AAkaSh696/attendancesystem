@@ -1,7 +1,7 @@
 import "dotenv/config"
 import mongoose from "mongoose";
-import userRouter from "../serverside/routers/userRoutes.js"
-import adminrouter from "../serverside/routers/admindashboard.js"
+import userRouter from "./routers/userRoutes.js";
+import adminrouter from "./routers/admindashboard.js";
 import bcrypt from "bcrypt"
 import express, { urlencoded } from "express";
 // import {userRoutes} from "./routers/userRoutes.js"
@@ -27,6 +27,6 @@ app.get("/", (req, res) => {
     res.send("Backend is workingknjknjk");
 });
 app.listen(5001, "0.0.0.0", () => {
-    console.log("Server running on port 5000");
+    console.log("Server running on port 5001");
 });
 

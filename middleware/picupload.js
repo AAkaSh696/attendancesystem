@@ -1,7 +1,12 @@
 import "dotenv/config";
 import { v2 as cloudinary } from "cloudinary";
 import jwt from "jsonwebtoken";
+import https from "https";
 import db from "../models/registration.js";
+
+const ipv4Agent = new https.Agent({
+    family: 4
+});
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -12,7 +17,10 @@ cloudinary.config({
 const uploadToCloudinary = (file, folder) => {
     return new Promise((resolve, reject) => {
         const stream = cloudinary.uploader.upload_stream(
-            { folder },
+            {
+                folder,
+                agent: ipv4Agent
+            },
             (error, result) => {
                 if (error) {
                     reject(error);
@@ -154,14 +162,13 @@ export const picupdate = async (req, res) => {
                 Refernceid: userId
             },
             {
-               $set: {
-    url: picResult.secure_url,
-    picpublicid: picResult.public_id,
-
-    verified: false,
-    verifiedBy: null,
-    verifiedAt: null
-}
+                $set: {
+                    url: picResult.secure_url,
+                    picpublicid: picResult.public_id,
+                    verified: false,
+                    verifiedBy: null,
+                    verifiedAt: null
+                }
             }
         );
 
@@ -171,15 +178,6 @@ export const picupdate = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-
-        if (
-            error.name === "JsonWebTokenError" ||
-            error.name === "TokenExpiredError"
-        ) {
-            return res.status(401).json({
-                msg: "Invalid or expired token"
-            });
-        }
 
         return res.status(500).json({
             msg: "Error updating profile picture"
@@ -244,14 +242,13 @@ export const Aadharpicupdate = async (req, res) => {
                 Refernceid: userId
             },
             {
-               $set: {
-    urlAadhar: aadharResult.secure_url,
-    picAadharid: aadharResult.public_id,
-
-    verified: false,
-    verifiedBy: null,
-    verifiedAt: null
-}
+                $set: {
+                    urlAadhar: aadharResult.secure_url,
+                    picAadharid: aadharResult.public_id,
+                    verified: false,
+                    verifiedBy: null,
+                    verifiedAt: null
+                }
             }
         );
 
@@ -261,15 +258,6 @@ export const Aadharpicupdate = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-
-        if (
-            error.name === "JsonWebTokenError" ||
-            error.name === "TokenExpiredError"
-        ) {
-            return res.status(401).json({
-                msg: "Invalid or expired token"
-            });
-        }
 
         return res.status(500).json({
             msg: "Error updating Aadhaar picture"
