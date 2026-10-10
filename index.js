@@ -16,6 +16,7 @@ const __dirname = path.dirname(__filename);
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:4173",
+  "http://10.162.135.224:5173",
    process.env.CORS_URL
   // add your real website address when you deploy, for example:
   // "https://diwalihaat.com",

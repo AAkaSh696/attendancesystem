@@ -205,7 +205,7 @@ export const updatedata = async (req, res) => {
         // ==========================================
         // SUCCESS
         // ==========================================
-
+        console.log(updated);
         return res.status(200).json({
 
             msg:
